@@ -7,8 +7,12 @@
 QObject *context;
 
 ProxyHandler::ProxyHandler(QObject *parent) : QObject(parent){
-    QQmlComponent component(new QQmlEngine, "LogDialog.qml");
+    QQmlComponent component(new QQmlEngine, "qrc:/LogDialog.qml");
     context = component.create();
+}
+
+ProxyHandler::~ProxyHandler(){
+    delete context;
 }
 
 void ProxyHandler::execute() {

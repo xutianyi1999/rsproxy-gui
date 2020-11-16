@@ -20,6 +20,7 @@ QmlCppBridge::QmlCppBridge(QObject *parent) : QObject(parent){
 QmlCppBridge::~QmlCppBridge() {
     workerThread.quit();
     workerThread.wait();
+    delete proxyHandler;
 }
 
 const string file_path = "./config.yaml";

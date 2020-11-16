@@ -8,7 +8,7 @@ class ProxyHandler : public QObject
     Q_OBJECT
 public:
     explicit ProxyHandler(QObject *parent = nullptr);
-
+    ~ProxyHandler();
     void execute();
 signals:
 

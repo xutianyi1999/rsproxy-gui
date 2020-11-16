@@ -22,7 +22,7 @@ Dialog {
         }
     }
 
-    function logAppend(log) {
+    function logAppend(log: string) {
        textArea.append(log);
     }
 }
