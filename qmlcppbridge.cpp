@@ -125,5 +125,7 @@ QJsonArray QmlCppBridge::init(){
 
 void QmlCppBridge::proxyStart() {
     proxyHandler -> moveToThread(&workerThread);
+    connect(&workerThread, &QThread::started, proxyHandler, &ProxyHandler::execute);
     workerThread.start();
+    qDebug() << "thread start";
 }

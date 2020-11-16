@@ -7,14 +7,17 @@
 QObject *context;
 
 ProxyHandler::ProxyHandler(QObject *parent) : QObject(parent){
-    QQmlEngine engine;
-    QQmlComponent component(&engine, "LogDialog.qml");
+    QQmlComponent component(new QQmlEngine, "LogDialog.qml");
     context = component.create();
 }
 
 void ProxyHandler::execute() {
+    qDebug() << "execute";
     QProcess process;
-    process.start("rs-proxy.exe", QStringList() << "client" << "config.yaml");
+
+//    QString program = "rs-proxy.exe";
+    QString program = "C:/Users/xutia/Desktop/rs-proxy-dic/rs-proxy.exe";
+    process.start(program, QStringList() << "client" << "config.yaml");
     auto flag = process.waitForStarted();
 
     if(!flag) {
