@@ -16,8 +16,45 @@ ApplicationWindow {
     minimumWidth: width
     visible:true
 
-    SettingDialog{
+    NodeDialog {
+        id: nodeDialog
+    }
+
+    LogDialog {
+        id: logDialog
+    }
+
+    Dialog {
         id: settingDialog
+        x: parent.width / 2 - width / 2
+        y: parent.height / 2 - height / 2
+        width: 350
+        title: "设置"
+        standardButtons:  Dialog.Save | Dialog.Cancel
+
+        GridLayout {
+            columns: 2
+            anchors.fill: parent
+            anchors.margins: 10
+            columnSpacing: 20
+
+            Label {
+                text: "socks5监听地址"
+            }
+            TextField {
+                selectByMouse: true
+                Layout.fillWidth: true
+                id: host
+            }
+        }
+
+        function init(_host) {
+           host.text = _host
+        }
+
+        onAccepted: {
+            qmlCppBridge.updateHost(host.text)
+        }
     }
 
     ColumnLayout {
@@ -27,12 +64,20 @@ ApplicationWindow {
 
         RowLayout{
             Layout.fillWidth: true
+
             Switch {
                 id: switch1
                 x: 40
                 y: 42
                 text: ""
                 display: AbstractButton.TextBesideIcon
+                onClicked: {
+                    if (switch1.checked) {
+                        qmlCppBridge.proxyStart();
+                    } else {
+
+                    }
+                }
             }
 
             Button {
@@ -40,6 +85,10 @@ ApplicationWindow {
                 x: 475
                 y: 42
                 text: "设置"
+                onClicked: {
+                    settingDialog.init(qmlCppBridge.getHost())
+                    settingDialog.open()
+                }
             }
         }
 
@@ -78,8 +127,8 @@ ApplicationWindow {
                 font.italic: false
                 font.bold: true
                 onClicked: {
-                    settingDialog.init(Enums.Cmd.OPEN, null)
-                    settingDialog.open()
+                    nodeDialog.init(Enums.Cmd.OPEN, null)
+                    nodeDialog.open()
                 }
             }
 
@@ -111,8 +160,8 @@ ApplicationWindow {
                                 bGrid.fillFromJson(qmlCppBridge.selectList())
                             } else {
                                 var json = qmlCppBridge.select(ref1)
-                                settingDialog.init(Enums.Cmd.EDIT, json)
-                                settingDialog.open()
+                                nodeDialog.init(Enums.Cmd.EDIT, json)
+                                nodeDialog.open()
                             }
                         }
                     }
@@ -136,5 +185,13 @@ ApplicationWindow {
                 bGrid.fillFromJson(qmlCppBridge.init());
             }
         }
+    }
+
+    Button {
+        id: logConsole
+        x: 490
+        y: 10
+        text: "日志"
+        onClicked: logDialog.open()
     }
 }

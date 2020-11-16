@@ -35,8 +35,7 @@ Dialog {
             } else {
                 protocol.currentIndex = 1
                 fileurl = json["cert"]
-                var str = fileurl.slice(0, 10)
-                cert.text = str +"..."
+                cert.text = fileurl
                 serverName.text = json["serverName"]
 
                 tcpVisible(false)
@@ -106,7 +105,7 @@ Dialog {
         columns: 2
         anchors.fill: parent
         anchors.margins: 10
-        columnSpacing: 10
+        columnSpacing: 80
 
         Label {
             text: "协议"
@@ -129,6 +128,8 @@ Dialog {
             text: "名称"
         }
         TextField {
+            selectByMouse: true
+            Layout.fillWidth: true
             id: name
         }
 
@@ -136,6 +137,8 @@ Dialog {
             text: "IP地址"
         }
         TextField {
+            selectByMouse: true
+            Layout.fillWidth: true
             id: host
         }
 
@@ -144,6 +147,8 @@ Dialog {
             text: "密钥"
         }
         TextField {
+            selectByMouse: true
+            Layout.fillWidth: true
             id: key
         }
 
@@ -152,6 +157,8 @@ Dialog {
             text: "连接数"
         }
         TextField {
+            selectByMouse: true
+            Layout.fillWidth: true
             id: connections
             validator: IntValidator {bottom: 1}
         }
@@ -161,6 +168,8 @@ Dialog {
             text: "缓冲队列容量"
         }
         TextField {
+            selectByMouse: true
+            Layout.fillWidth: true
             id: buffSize
             validator: IntValidator {bottom: 1}
         }
@@ -172,6 +181,7 @@ Dialog {
         }
 
         Button {
+            Layout.fillWidth: true
             visible: false
             id: cert
             text:"浏览..."
@@ -190,8 +200,7 @@ Dialog {
             selectMultiple: false
             onAccepted:{
                 fileurl = certDialog.fileUrl.toString();
-                var str= fileurl.slice(0, 10)
-                cert.text = str +"..."
+                cert.text = fileurl
             }
 
             onRejected: {
@@ -206,6 +215,8 @@ Dialog {
         }
 
         TextField {
+            selectByMouse: true
+            Layout.fillWidth: true
             visible: false
             id: serverName
         }

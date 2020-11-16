@@ -5,11 +5,22 @@
 #include <QFile>
 #include <fstream>
 #include <vector>
+#include <QThread>
+#include "proxyhandler.h"
 
 using namespace std;
 
-QmlCppBridge::QmlCppBridge(QObject *parent) : QObject(parent)
-{}
+QThread workerThread;
+ProxyHandler *proxyHandler;
+
+QmlCppBridge::QmlCppBridge(QObject *parent) : QObject(parent){
+    proxyHandler = new ProxyHandler();
+}
+
+QmlCppBridge::~QmlCppBridge() {
+    workerThread.quit();
+    workerThread.wait();
+}
 
 const string file_path = "./config.yaml";
 map<string, YAML::Node> config_map;
@@ -96,8 +107,23 @@ void QmlCppBridge::update(QJsonObject json) {
     sync();
 }
 
+QString QmlCppBridge::getHost() {
+    return QString::fromStdString(bind_host);
+}
+
+void QmlCppBridge::updateHost(QString host) {
+    bind_host.clear();
+    bind_host.append(host.toStdString());
+    sync();
+}
+
 QJsonArray QmlCppBridge::init(){
     check_File();
     load();
     return selectList();
+}
+
+void QmlCppBridge::proxyStart() {
+    proxyHandler -> moveToThread(&workerThread);
+    workerThread.start();
 }
