@@ -2,7 +2,6 @@ import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.15
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import mycpp 1.0
 
 Dialog {
     width: 500
@@ -13,10 +12,6 @@ Dialog {
     standardButtons:  Dialog.Save | Dialog.Cancel
 
     property var fileurl
-
-    QmlCppBridge{
-        id: qmlCppBridge
-    }
 
     function init(cmd, json) {
         if (cmd === Enums.Cmd.EDIT) {
@@ -63,8 +58,8 @@ Dialog {
             json["serverName"] = serverName.text
         }
 
-        qmlCppBridge.update(json)
-        bGrid.fillFromJson(qmlCppBridge.selectList())
+        configHandler.update(json)
+        bGrid.fillFromJson(configHandler.selectList())
         textFiledReset()
     }
 

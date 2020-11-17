@@ -16,12 +16,19 @@ ApplicationWindow {
     minimumWidth: width
     visible:true
 
+    ConfigHandler{
+        id: configHandler
+    }
+
+    ProxyHandler {
+        id: proxyHandler
+    }
+
     NodeDialog {
         id: nodeDialog
     }
 
     LogDialog {
-        objectName: "logDialog"
         id: logDialog
     }
 
@@ -54,7 +61,7 @@ ApplicationWindow {
         }
 
         onAccepted: {
-            qmlCppBridge.updateHost(host.text)
+            configHandler.updateHost(host.text)
         }
     }
 
@@ -73,9 +80,9 @@ ApplicationWindow {
                 display: AbstractButton.TextBesideIcon
                 onClicked: {
                     if (switch1.checked) {
-                        qmlCppBridge.proxyStart()
+                        proxyHandler.proxyStart()
                     } else {
-                        qmlCppBridge.proxyStop()
+                        proxyHandler.proxyStop()
                     }
                 }
             }
@@ -86,7 +93,7 @@ ApplicationWindow {
                 y: 42
                 text: "设置"
                 onClicked: {
-                    settingDialog.init(qmlCppBridge.getHost())
+                    settingDialog.init(configHandler.getHost())
                     settingDialog.open()
                 }
             }
@@ -156,10 +163,10 @@ ApplicationWindow {
                             var editCmd = 2
 
                             if (command === deleteCmd) {
-                                qmlCppBridge.remove(ref1)
-                                bGrid.fillFromJson(qmlCppBridge.selectList())
+                                configHandler.remove(ref1)
+                                bGrid.fillFromJson(configHandler.selectList())
                             } else {
-                                var json = qmlCppBridge.select(ref1)
+                                var json = configHandler.select(ref1)
                                 nodeDialog.init(Enums.Cmd.EDIT, json)
                                 nodeDialog.open()
                             }
@@ -177,12 +184,8 @@ ApplicationWindow {
 
             fromListModel: modColumns
 
-            QmlCppBridge{
-                id: qmlCppBridge
-            }
-
             Component.onCompleted: {
-                bGrid.fillFromJson(qmlCppBridge.init());
+                bGrid.fillFromJson(configHandler.init());
             }
         }
     }

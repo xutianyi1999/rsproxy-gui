@@ -1,50 +1,21 @@
-#include "qmlcppbridge.h"
+#include "confighandler.h"
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 #include <map>
 #include <QFile>
 #include <fstream>
 #include <vector>
-#include <QThread>
 #include "proxyhandler.h"
 #include <QQmlEngine>
 #include <QQmlComponent>
 
 using namespace std;
 
-QThread workerThread;
-QQmlEngine *engine = nullptr;
-QObject *rootContext = nullptr;
-QObject *logContext = nullptr;
-
-void readMsgTest(QString str) {
-    auto r = QMetaObject::invokeMethod(logContext, "append", Q_ARG(QString, str));
-    qDebug() << r << "=====" << str;
-}
-
-QmlCppBridge::QmlCppBridge(QObject *parent) : QObject(parent){
-    engine = new QQmlEngine;
-    QQmlComponent component(engine, "qrc:/LogDialog.qml");
-    rootContext = component.create();
-    logContext = rootContext->findChild<QObject*>("textArea");
-
-    auto proxyHandler = new ProxyHandler();
-    proxyHandler->moveToThread(&workerThread);
-    connect(&workerThread, &QThread::finished, proxyHandler, &ProxyHandler::deleteLater);
-    connect(this, &QmlCppBridge::proxyStart, proxyHandler, &ProxyHandler::execute);
-    connect(this, &QmlCppBridge::proxyStop, proxyHandler, &ProxyHandler::stop);
-    connect(proxyHandler, &ProxyHandler::readyMsg, this, &readMsgTest);
-    workerThread.start();
+ConfigHandler::ConfigHandler(QObject *parent) : QObject(parent){
 }
 
 
-QmlCppBridge::~QmlCppBridge() {
-    workerThread.quit();
-    workerThread.wait();
-
-    delete engine;
-    delete logContext;
-    delete rootContext;
+ConfigHandler::~ConfigHandler() {
 }
 
 const string file_path = "./config.yaml";
@@ -85,7 +56,7 @@ void check_File() {
     }
 }
 
-QJsonArray QmlCppBridge::selectList() {
+QJsonArray ConfigHandler::selectList() {
     QJsonArray json;
 
     for (auto entry: config_map) {
@@ -100,7 +71,7 @@ QJsonArray QmlCppBridge::selectList() {
     return json;
 }
 
-QJsonObject QmlCppBridge::select(QString name) {
+QJsonObject ConfigHandler::select(QString name) {
     auto node = config_map[name.toStdString()];
     QJsonObject json;
 
@@ -113,12 +84,12 @@ QJsonObject QmlCppBridge::select(QString name) {
     return json;
 }
 
-void QmlCppBridge::remove(QString name) {
+void ConfigHandler::remove(QString name) {
     config_map.erase(name.toStdString());
     sync();
 }
 
-void QmlCppBridge::update(QJsonObject json) {
+void ConfigHandler::update(QJsonObject json) {
     YAML::Node node;
     QJsonObject::Iterator it;
 
@@ -132,17 +103,17 @@ void QmlCppBridge::update(QJsonObject json) {
     sync();
 }
 
-QString QmlCppBridge::getHost() {
+QString ConfigHandler::getHost() {
     return QString::fromStdString(bind_host);
 }
 
-void QmlCppBridge::updateHost(QString host) {
+void ConfigHandler::updateHost(QString host) {
     bind_host.clear();
     bind_host.append(host.toStdString());
     sync();
 }
 
-QJsonArray QmlCppBridge::init(){
+QJsonArray ConfigHandler::init(){
     check_File();
     load();
     return selectList();

@@ -7,12 +7,8 @@ class ProxyHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit ProxyHandler(QObject *parent = nullptr);
-    void execute();
-    void stop();
-
-signals:
-    void readyMsg(QString msg);
+    Q_INVOKABLE void proxyStart();
+    Q_INVOKABLE void proxyStop();
 };
 
 #endif // PROXYHANDLER_H

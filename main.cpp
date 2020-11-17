@@ -3,7 +3,9 @@
 #include <QtQuickControls2>
 #include <bpptablemodel.h>
 #include <bppfontawesome.h>
-#include <qmlcppbridge.h>
+#include "confighandler.h"
+#include "proxyhandler.h"
+#include "common.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,14 +15,17 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("somename");
     QQuickStyle::setStyle("Material");
 
+    WORKER = new Worker;
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("worker", WORKER);
 
     bpp::TableModel::registerQml();
     bpp::FontAwesome::registerQml(engine);
     engine.addImportPath("qrc:/");
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
-    qmlRegisterType<QmlCppBridge>("mycpp", 1, 0, "QmlCppBridge");
+    qmlRegisterType<ConfigHandler>("mycpp", 1, 0, "ConfigHandler");
+    qmlRegisterType<ProxyHandler>("mycpp", 1, 0, "ProxyHandler");
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

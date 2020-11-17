@@ -6,13 +6,13 @@
 #include <QJsonObject>
 #include <QString>
 
-class QmlCppBridge : public QObject
+class ConfigHandler : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit QmlCppBridge(QObject *parent = nullptr);
-    ~QmlCppBridge();
+    explicit ConfigHandler(QObject *parent = nullptr);
+    ~ConfigHandler();
     Q_INVOKABLE QJsonArray init();
     Q_INVOKABLE QString getHost();
     Q_INVOKABLE void updateHost(QString host);
@@ -22,8 +22,6 @@ public:
     Q_INVOKABLE void update(QJsonObject json);
 
 signals:
-    Q_INVOKABLE void proxyStart();
-    Q_INVOKABLE void proxyStop();
 };
 
 #endif // QMLCPPBRIDGE_H
