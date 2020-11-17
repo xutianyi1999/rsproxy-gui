@@ -21,10 +21,9 @@ public:
     Q_INVOKABLE void remove(QString name);
     Q_INVOKABLE void update(QJsonObject json);
 
-    Q_INVOKABLE void proxyStart();
-
 signals:
-
+    Q_INVOKABLE void proxyStart();
+    Q_INVOKABLE void proxyStop();
 };
 
 #endif // QMLCPPBRIDGE_H

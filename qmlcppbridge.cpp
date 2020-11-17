@@ -7,20 +7,44 @@
 #include <vector>
 #include <QThread>
 #include "proxyhandler.h"
+#include <QQmlEngine>
+#include <QQmlComponent>
 
 using namespace std;
 
 QThread workerThread;
-ProxyHandler *proxyHandler;
+QQmlEngine *engine = nullptr;
+QObject *rootContext = nullptr;
+QObject *logContext = nullptr;
+
+void readMsgTest(QString str) {
+    auto r = QMetaObject::invokeMethod(logContext, "append", Q_ARG(QString, str));
+    qDebug() << r << "=====" << str;
+}
 
 QmlCppBridge::QmlCppBridge(QObject *parent) : QObject(parent){
-    proxyHandler = new ProxyHandler();
+    engine = new QQmlEngine;
+    QQmlComponent component(engine, "qrc:/LogDialog.qml");
+    rootContext = component.create();
+    logContext = rootContext->findChild<QObject*>("textArea");
+
+    auto proxyHandler = new ProxyHandler();
+    proxyHandler->moveToThread(&workerThread);
+    connect(&workerThread, &QThread::finished, proxyHandler, &ProxyHandler::deleteLater);
+    connect(this, &QmlCppBridge::proxyStart, proxyHandler, &ProxyHandler::execute);
+    connect(this, &QmlCppBridge::proxyStop, proxyHandler, &ProxyHandler::stop);
+    connect(proxyHandler, &ProxyHandler::readyMsg, this, &readMsgTest);
+    workerThread.start();
 }
+
 
 QmlCppBridge::~QmlCppBridge() {
     workerThread.quit();
     workerThread.wait();
-    delete proxyHandler;
+
+    delete engine;
+    delete logContext;
+    delete rootContext;
 }
 
 const string file_path = "./config.yaml";
@@ -84,7 +108,7 @@ QJsonObject QmlCppBridge::select(QString name) {
         auto k = entry.first;
         auto v = entry.second;
 
-       json[k.as<string>().c_str()] = v.as<string>().c_str();
+        json[k.as<string>().c_str()] = v.as<string>().c_str();
     }
     return json;
 }
@@ -122,11 +146,4 @@ QJsonArray QmlCppBridge::init(){
     check_File();
     load();
     return selectList();
-}
-
-void QmlCppBridge::proxyStart() {
-    proxyHandler -> moveToThread(&workerThread);
-    connect(&workerThread, &QThread::started, proxyHandler, &ProxyHandler::execute);
-    workerThread.start();
-    qDebug() << "thread start";
 }

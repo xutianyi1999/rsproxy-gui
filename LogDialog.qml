@@ -13,6 +13,7 @@ Dialog {
         id: view
         anchors.fill: parent
         TextArea {
+            objectName: "textArea"
             id: textArea
             selectByMouse: true
             font.pixelSize: 12
@@ -23,6 +24,7 @@ Dialog {
     }
 
     function logAppend(log: string) {
+        console.log(log)
        textArea.append(log);
     }
 }

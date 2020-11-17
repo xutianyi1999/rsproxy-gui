@@ -21,6 +21,7 @@ ApplicationWindow {
     }
 
     LogDialog {
+        objectName: "logDialog"
         id: logDialog
     }
 
@@ -69,13 +70,12 @@ ApplicationWindow {
                 id: switch1
                 x: 40
                 y: 42
-                text: ""
                 display: AbstractButton.TextBesideIcon
                 onClicked: {
                     if (switch1.checked) {
-                        qmlCppBridge.proxyStart();
+                        qmlCppBridge.proxyStart()
                     } else {
-
+                        qmlCppBridge.proxyStop()
                     }
                 }
             }

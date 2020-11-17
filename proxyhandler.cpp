@@ -1,22 +1,12 @@
 #include "proxyhandler.h"
 #include <QProcess>
-#include <QQmlEngine>
-#include <QQmlComponent>
-#include <QMetaObject>
-
-QObject *context;
+#include <QTextStream>
+#include <QDebug>
 
 ProxyHandler::ProxyHandler(QObject *parent) : QObject(parent){
-    QQmlComponent component(new QQmlEngine, "qrc:/LogDialog.qml");
-    context = component.create();
-}
 
-ProxyHandler::~ProxyHandler(){
-    delete context;
 }
-
 void ProxyHandler::execute() {
-    qDebug() << "execute";
     QProcess process;
 
 //    QString program = "rs-proxy.exe";
@@ -33,7 +23,11 @@ void ProxyHandler::execute() {
     while (process.waitForReadyRead()) {
         while (!textStream.atEnd()) {
             auto str = textStream.readLine();
-            QMetaObject::invokeMethod(context, "logAppend", Q_ARG(QString, str));
+            emit readyMsg(str);
         }
     }
+}
+
+void ProxyHandler::stop(){
+    emit readyMsg("stop");
 }
