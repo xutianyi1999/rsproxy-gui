@@ -19,8 +19,7 @@ void Worker::run() {
     if (process == nullptr) {
         process = new QProcess;
     }
-//    QString program = "rs-proxy.exe";
-    QString program = "C:/Users/xutia/Desktop/rs-proxy-dic/rs-proxy.exe";
+    QString program = "rs-proxy.exe";
     process->start(program, QStringList() << "client" << "temp");
     auto flag = process -> waitForStarted();
 
