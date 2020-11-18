@@ -24,8 +24,6 @@ Dialog {
 
     Connections{
         target: worker
-        onPush: {
-            textArea.append(msg)
-        }
+        onPushMsg: textArea.append(msg)
     }
 }

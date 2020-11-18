@@ -65,6 +65,11 @@ ApplicationWindow {
         }
     }
 
+    Connections{
+        target: worker
+        onEnd: switch1.checked = false
+    }
+
     ColumnLayout {
         id: gridLayout
         anchors.fill: parent
@@ -80,6 +85,13 @@ ApplicationWindow {
                 display: AbstractButton.TextBesideIcon
                 onClicked: {
                     if (switch1.checked) {
+                        var rows = bGrid.getSelectedRows()
+
+                        var nameList = []
+                        for (var i = 0; i < rows.length; i++) {
+                            nameList.push(bGrid.cellValue(rows[i], 2))
+                        }
+                        configHandler.writeTemp(nameList)
                         proxyHandler.proxyStart()
                     } else {
                         proxyHandler.proxyStop()

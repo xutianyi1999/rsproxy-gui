@@ -11,7 +11,8 @@ public:
     void run() override;
     void stop();
 signals:
-    void push(QString msg);
+    void pushMsg(QString msg);
+    void end();
 };
 
 #endif // WORKER_H

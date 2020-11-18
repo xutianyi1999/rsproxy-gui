@@ -21,6 +21,7 @@ public:
     Q_INVOKABLE void remove(QString name);
     Q_INVOKABLE void update(QJsonObject json);
 
+    Q_INVOKABLE void writeTemp(QVector<QString> nameList);
 signals:
 };
 

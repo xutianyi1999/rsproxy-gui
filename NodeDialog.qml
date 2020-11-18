@@ -129,7 +129,7 @@ Dialog {
         }
 
         Label {
-            text: "IP地址"
+            text: "主机地址"
         }
         TextField {
             selectByMouse: true

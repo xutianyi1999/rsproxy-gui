@@ -21,7 +21,7 @@ void Worker::run() {
     }
 //    QString program = "rs-proxy.exe";
     QString program = "C:/Users/xutia/Desktop/rs-proxy-dic/rs-proxy.exe";
-    process->start(program, QStringList() << "client" << "config.yaml");
+    process->start(program, QStringList() << "client" << "temp");
     auto flag = process -> waitForStarted();
 
     if(!flag) {
@@ -30,15 +30,20 @@ void Worker::run() {
 
     QTextStream textStream(process);
 
+    emit pushMsg("================START================");
     while (process->waitForReadyRead(-1)) {
         while (!textStream.atEnd()) {
             auto byte = textStream.readLine().toUtf8();
             auto str =codec->fromUnicode(byte);
-            emit push(str);
+            emit pushMsg(str);
         }
     }
+    emit pushMsg("=================END=================");
+    emit end();
 }
 
 void Worker::stop() {
-    process->kill();
+    if (process != nullptr) {
+        process->kill();
+    }
 }

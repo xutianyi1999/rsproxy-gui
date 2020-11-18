@@ -18,7 +18,8 @@ ConfigHandler::ConfigHandler(QObject *parent) : QObject(parent){
 ConfigHandler::~ConfigHandler() {
 }
 
-const string file_path = "./config.yaml";
+const string FILE_PATH = "./config.yaml";
+const string TMEMP_PATH = "./temp";
 map<string, YAML::Node> config_map;
 string bind_host;
 
@@ -33,12 +34,12 @@ void sync() {
     }
     config["remote"] = list;
 
-    ofstream out(file_path);
+    ofstream out(FILE_PATH);
     out << config;
 }
 
 void load() {
-    YAML::Node config = YAML::LoadFile(file_path);
+    YAML::Node config = YAML::LoadFile(FILE_PATH);
     bind_host.append(config["host"].as<string>());
 
     auto remote = config["remote"].as<vector<YAML::Node>>();
@@ -49,7 +50,7 @@ void load() {
 }
 
 void check_File() {
-    QFile file(QString::fromStdString(file_path));
+    QFile file(QString::fromStdString(FILE_PATH));
 
     if (!file.exists()) {
         sync();
@@ -117,4 +118,20 @@ QJsonArray ConfigHandler::init(){
     check_File();
     load();
     return selectList();
+}
+
+void ConfigHandler::writeTemp(QVector<QString> nameList) {
+    YAML::Node config;
+
+    config["host"] = bind_host;
+    vector<YAML::Node>list;
+
+    for (auto name : nameList) {
+        auto node = config_map[name.toStdString().c_str()];
+        list.push_back(node);
+    }
+    config["remote"] = list;
+
+    ofstream out(TMEMP_PATH);
+    out << config;
 }
