@@ -2,7 +2,7 @@ import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.15
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-
+import QtQuick.Controls.Material 2.12
 Dialog {
     width: 500
     height: 400
@@ -176,6 +176,8 @@ Dialog {
         }
 
         Button {
+            highlighted: true
+            Material.accent: Material.BlueGrey
             Layout.fillWidth: true
             visible: false
             id: cert

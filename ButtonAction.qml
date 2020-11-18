@@ -18,7 +18,7 @@ Item {
     Rectangle {
         id: rect
         radius: 15
-        color: "#11ad11"
+        color: "#607D8B"
         border.color: "#515151"
         border.width: 2
         anchors.verticalCenter: parent.verticalCenter

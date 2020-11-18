@@ -4,8 +4,11 @@ import QtQuick.Layouts 1.15
 import BppTableModel 0.1
 import BppTable 0.1
 import mycpp 1.0
+import QtQuick.Controls.Material 2.12
 
 ApplicationWindow {
+    Material.accent: Material.BlueGrey
+    Material.primary: Material.BlueGrey
     height: 500
     width: 600
 
@@ -100,6 +103,8 @@ ApplicationWindow {
             }
 
             Button {
+                highlighted: true
+                Material.accent: Material.BlueGrey
                 id: button
                 x: 475
                 y: 42
@@ -203,6 +208,8 @@ ApplicationWindow {
     }
 
     Button {
+        highlighted: true
+        Material.accent: Material.BlueGrey
         id: logConsole
         x: 490
         y: 10
