@@ -29,7 +29,7 @@ void Worker::run() {
 
     QTextStream textStream(process);
 
-    emit pushMsg("================START================");
+    emit pushMsg("======================================START======================================");
     while (process->waitForReadyRead(-1)) {
         while (!textStream.atEnd()) {
             auto byte = textStream.readLine().toUtf8();
@@ -37,7 +37,7 @@ void Worker::run() {
             emit pushMsg(str);
         }
     }
-    emit pushMsg("=================END=================");
+    emit pushMsg("========================================END=======================================");
     emit end();
 }
 

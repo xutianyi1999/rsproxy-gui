@@ -21,12 +21,13 @@ ConfigHandler::~ConfigHandler() {
 const string FILE_PATH = "./config.yaml";
 const string TMEMP_PATH = "./temp";
 map<string, YAML::Node> config_map;
-string bind_host;
+QJsonObject local_config;
 
 void sync() {
     YAML::Node config;
 
-    config["host"] = bind_host;
+    config["socks5Listen"] = local_config["socks5Listen"].toString().toStdString();
+    config["httpListen"] = local_config["httpListen"].toString().toStdString();
     vector<YAML::Node>list;
 
     for (auto entry : config_map) {
@@ -40,7 +41,8 @@ void sync() {
 
 void load() {
     YAML::Node config = YAML::LoadFile(FILE_PATH);
-    bind_host.append(config["host"].as<string>());
+    local_config["socks5Listen"] = config["socks5Listen"].as<string>().c_str();
+    local_config["httpListen"] = config["httpListen"].as<string>().c_str();
 
     auto remote = config["remote"].as<vector<YAML::Node>>();
 
@@ -104,13 +106,12 @@ void ConfigHandler::update(QJsonObject json) {
     sync();
 }
 
-QString ConfigHandler::getHost() {
-    return QString::fromStdString(bind_host);
+QJsonObject ConfigHandler::getLocalConfig() {
+    return local_config;
 }
 
-void ConfigHandler::updateHost(QString host) {
-    bind_host.clear();
-    bind_host.append(host.toStdString());
+void ConfigHandler::updateLocalConfig(QJsonObject config) {
+    local_config = config;
     sync();
 }
 
@@ -123,7 +124,8 @@ QJsonArray ConfigHandler::init(){
 void ConfigHandler::writeTemp(QVector<QString> nameList) {
     YAML::Node config;
 
-    config["host"] = bind_host;
+    config["socks5Listen"] = local_config["socks5Listen"].toString().toStdString();
+    config["httpListen"] = local_config["httpListen"].toString().toStdString();
     vector<YAML::Node>list;
 
     for (auto name : nameList) {

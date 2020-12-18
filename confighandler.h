@@ -14,8 +14,8 @@ public:
     explicit ConfigHandler(QObject *parent = nullptr);
     ~ConfigHandler();
     Q_INVOKABLE QJsonArray init();
-    Q_INVOKABLE QString getHost();
-    Q_INVOKABLE void updateHost(QString host);
+    Q_INVOKABLE QJsonObject getLocalConfig();
+    Q_INVOKABLE void updateLocalConfig(QJsonObject config);
     Q_INVOKABLE QJsonArray selectList();
     Q_INVOKABLE QJsonObject select(QString name);
     Q_INVOKABLE void remove(QString name);

@@ -55,16 +55,29 @@ ApplicationWindow {
             TextField {
                 selectByMouse: true
                 Layout.fillWidth: true
-                id: host
+                id: socks5Addr
+            }
+
+            Label {
+                text: "http监听地址"
+            }
+            TextField {
+                selectByMouse: true
+                Layout.fillWidth: true
+                id: httpAddr
             }
         }
 
-        function init(_host) {
-           host.text = _host
+        function init(config) {
+           socks5Addr.text = config["socks5Listen"]
+           httpAddr.text = config["httpListen"]
         }
 
         onAccepted: {
-            configHandler.updateHost(host.text)
+            var config ={}
+            config["socks5Listen"] = socks5Addr.text
+            config["httpListen"] = httpAddr.text
+            configHandler.updateLocalConfig(config)
         }
     }
 
@@ -110,7 +123,7 @@ ApplicationWindow {
                 y: 42
                 text: "设置"
                 onClicked: {
-                    settingDialog.init(configHandler.getHost())
+                    settingDialog.init(configHandler.getLocalConfig())
                     settingDialog.open()
                 }
             }
@@ -215,5 +228,9 @@ ApplicationWindow {
         y: 10
         text: "日志"
         onClicked: logDialog.open()
+    }
+
+    onClosing: {
+        proxyHandler.proxyStop()
     }
 }
